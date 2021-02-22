@@ -105,6 +105,7 @@ class SwipeStackState extends State<SwipeStack>
     _animationController.addListener(() {
       if (_animationController.status == AnimationStatus.forward) {
         if (_animationX != null) _left = _animationX.value;
+        print("_animationX: $_animationX _left: $_left");
 
         if (_animationY != null) _top = _animationY.value;
 
