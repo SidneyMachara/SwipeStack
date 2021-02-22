@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as Math;
 import 'package:flutter/widgets.dart';
 
+// import 'package:tieinup/utils/debugBro.dart';
+
 enum SwiperPosition { None, Left, Right }
 enum StackFrom { None, Top, Left, Right, Bottom }
 
@@ -26,12 +28,12 @@ class SwipeStack extends StatefulWidget {
   final void Function() onEnd;
   final EdgeInsetsGeometry padding;
 
-  final btnStreamController;
+  // final btnStreamController;
 
   SwipeStack(
       {Key key,
       @required this.children,
-      @required this.btnStreamController,
+      // @required this.btnStreamController,
       this.maxAngle = 35,
       this.threshold = 30,
       this.stackFrom = StackFrom.None,
@@ -91,9 +93,9 @@ class SwipeStackState extends State<SwipeStack>
 
   /// allow for control with buttons using stream
   ///////
-  StreamController<SwiperPosition> btnStreamController;
+  // StreamController<SwiperPosition> btnStreamController;
 
-  StreamSubscription<SwiperPosition> btnStreamSubscription;
+  // StreamSubscription<SwiperPosition> btnStreamSubscription;
 
   @override
   void initState() {
@@ -102,10 +104,13 @@ class SwipeStackState extends State<SwipeStack>
     _animationController =
         AnimationController(duration: widget.animationDuration, vsync: this);
 
-    _animationController.addListener(() {
+    _animationController.addListener(() async {
+      /// this is a btn controll hack (mauanl swipe)
+      await Future.delayed(Duration(milliseconds: 10));
+
       if (_animationController.status == AnimationStatus.forward) {
         if (_animationX != null) _left = _animationX.value;
-        print("_animationX: $_animationX _left: $_left");
+        // logger.wtf("_animationX: $_animationX");
 
         if (_animationY != null) _top = _animationY.value;
 
@@ -167,23 +172,23 @@ class SwipeStackState extends State<SwipeStack>
     });
 
     ///
-    btnStreamController = widget.btnStreamController;
+    // btnStreamController = widget.btnStreamController;
 
-    Stream btnStream = btnStreamController.stream;
+    // Stream btnStream = btnStreamController.stream;
 
-    btnStreamSubscription = btnStream.listen((swipeDirection) {
-      print('Value from controller: $swipeDirection');
+    // btnStreamSubscription = btnStream.listen((swipeDirection) {
+    //   // print('Value from controller: $swipeDirection');
 
-      if (swipeDirection == SwiperPosition.Left) {
-        swipeLeft();
-        return;
-      }
+    //   if (swipeDirection == SwiperPosition.Left) {
+    //     swipeLeft();
+    //     return;
+    //   }
 
-      if (swipeDirection == SwiperPosition.Right) {
-        swipeRight();
-        return;
-      }
-    });
+    //   if (swipeDirection == SwiperPosition.Right) {
+    //     swipeRight();
+    //     return;
+    //   }
+    // });
 
     super.initState();
   }
@@ -336,6 +341,7 @@ class SwipeStackState extends State<SwipeStack>
       if (widget.maxAngle > 0)
         _animationAngle = Tween<double>(begin: 0, end: _maxAngle * 0.7)
             .animate(_animationController);
+
       _animationController.forward();
     }
   }
@@ -382,8 +388,8 @@ class SwipeStackState extends State<SwipeStack>
   @override
   void dispose() {
     _animationController.dispose();
-    btnStreamSubscription.cancel();
-    btnStreamController.close();
+    // btnStreamSubscription.cancel();
+    // btnStreamController.close();
     super.dispose();
   }
 }
